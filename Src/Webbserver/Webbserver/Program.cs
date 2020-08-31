@@ -55,8 +55,16 @@ namespace Webbserver
             // Note: The GetContext method blocks while waiting for a request.
             //HttpListenerContext context = listener.GetContext();
             //HttpListenerRequest request = context.Request;
+
+            //Send a cookie to the client and add visitingdate and time
+            Cookie timeStampCookie = new Cookie("VisitDate", DateTime.Now.ToString());
+
             // Obtain a response object.
             HttpListenerResponse response = context.Response;
+
+            //Add cookie to the response
+            response.SetCookie(timeStampCookie);
+
             // Construct a response.
             string responseString = documentContents;
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
