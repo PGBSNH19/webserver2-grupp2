@@ -10,7 +10,7 @@ namespace Webbserver
         static void Main(string[] args)
         {
             //Console.WriteLine("Hello World!");
-            string[] hello = { "http://localhost:5000/Content/anotherpage.htm/", "http://localhost:5000/Content/index.html/", "http://localhost:5000/Content/document.pdf/"};
+            string[] hello = { "http://localhost:5000/Content/index.html/" };
             SimpleListenerExample(hello);
         }
 
@@ -40,14 +40,10 @@ namespace Webbserver
             HttpListenerContext context = listener.GetContext();
             HttpListenerRequest request = context.Request;
 
-            string documentContents;
-            using (Stream receiveStream = request.InputStream)
-            {
-                using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
-                {
-                    documentContents = readStream.ReadToEnd();
-                }
-            }
+            // This should be dynamic
+            string documentContents = File.ReadAllText(@"...\Content\index.html");
+
+
             Console.WriteLine($"Recived request for {request.Url}");
             Console.WriteLine(documentContents);
 
@@ -59,7 +55,7 @@ namespace Webbserver
             // Obtain a response object.
             HttpListenerResponse response = context.Response;
             // Construct a response.
-            string responseString = "http://localhost:5000/Content/index.html/";
+            string responseString = documentContents;
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
             // Get a response stream and write the response to it.
             response.ContentLength64 = buffer.Length;
