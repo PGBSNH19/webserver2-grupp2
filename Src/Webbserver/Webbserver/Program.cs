@@ -9,9 +9,11 @@ namespace Webbserver
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("Hello World!");
-            string[] hello = { "http://localhost:5000/Content/index.html/" };
-            SimpleListenerExample(hello);
+            string[] input = { "http://localhost:5000/" };
+            while (true)
+            {
+                SimpleListenerExample(input);
+            }
         }
 
         // This example requires the System and System.Net namespaces.
@@ -40,9 +42,18 @@ namespace Webbserver
             HttpListenerContext context = listener.GetContext();
             HttpListenerRequest request = context.Request;
 
-            // This should be dynamic
-            string documentContents = File.ReadAllText(@"...\Content\index.html");
+            var localPath = Directory.GetParent(
+                Directory.GetParent(
+                    Directory.GetParent(
+                        Environment.CurrentDirectory)
+                    .Parent.FullName)
+                    .Parent.FullName)
+                    .Parent.FullName;
 
+
+
+            var path = localPath + request.Url.LocalPath;
+            string documentContents = File.ReadAllText(path);
 
             Console.WriteLine($"Recived request for {request.Url}");
             Console.WriteLine(documentContents);
@@ -62,8 +73,11 @@ namespace Webbserver
             System.IO.Stream output = response.OutputStream;
             output.Write(buffer, 0, buffer.Length);
             // You must close the output stream.
+
+
             output.Close();
             listener.Stop();
+
         }
     }
 }
