@@ -42,18 +42,10 @@ namespace Webbserver
             HttpListenerContext context = listener.GetContext();
             HttpListenerRequest request = context.Request;
 
-            var localPath = Directory.GetParent(
-                Directory.GetParent(
-                    Directory.GetParent(
-                        Environment.CurrentDirectory)
-                    .Parent.FullName)
-                    .Parent.FullName)
-                    .Parent.FullName;
+            string parentOfStartupPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"../../../../../../"));
+            string indexPath = Path.Combine(parentOfStartupPath, "Content/index.html");
 
-
-
-            var path = localPath + request.Url.LocalPath;
-            string documentContents = File.ReadAllText(path);
+            string documentContents = File.ReadAllText(indexPath);
 
             Console.WriteLine($"Recived request for {request.Url}");
             Console.WriteLine(documentContents);
