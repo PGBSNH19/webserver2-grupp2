@@ -50,20 +50,17 @@ namespace Webbserver
             Console.WriteLine($"Recived request for {request.Url}");
             Console.WriteLine(documentContents);
 
-
-
-            // Note: The GetContext method blocks while waiting for a request.
-            //HttpListenerContext context = listener.GetContext();
-            //HttpListenerRequest request = context.Request;
-
-            //Send a cookie to the client and add visitingdate and time
-            Cookie timeStampCookie = new Cookie("VisitDate", DateTime.Now.ToString());
-
             // Obtain a response object.
             HttpListenerResponse response = context.Response;
 
+            //Send a cookie to the client and add visitingdate and time
+            Cookie timeStampCookie = new Cookie("VisitDate", DateTime.Now.ToString());                   
             //Add cookie to the response
             response.SetCookie(timeStampCookie);
+
+            //Add header
+            response.AddHeader("Expires", "54");
+
 
             // Construct a response.
             string responseString = documentContents;
@@ -72,9 +69,8 @@ namespace Webbserver
             response.ContentLength64 = buffer.Length;
             System.IO.Stream output = response.OutputStream;
             output.Write(buffer, 0, buffer.Length);
+            
             // You must close the output stream.
-
-
             output.Close();
             listener.Stop();
 
